@@ -13,22 +13,20 @@ dp_obj     <- readRDS("data/processed/donorpool.rds")
 id_treated <- dp_obj$id_treated
 id_donors  <- dp_obj$id_donors
 
-# ---------------------------------------------------------------------------
 # A Hauptspezifikation
-# ---------------------------------------------------------------------------
 
-# Hauptspezifikation schaetzen und Pfade speichern.
+
+# Hauptspezifikation schätzen und Pfade speichern.
 res_haupt   <- run_scm(panel_scm, CFG$predictors, id_treated, id_donors)
 pfade_haupt <- extract_paths(res_haupt)
 write_csv(pfade_haupt, "output/synth_pfade_haupt.csv")
 
-# Donorgewichte und Praediktorbalance speichern.
+# Donorgewichte und Prädiktorbalance speichern.
 tabs        <- synth.tab(dataprep.res = res_haupt$dataprep, synth.res = res_haupt$synth)
 weights_tab <- tabs$tab.w |> as_tibble() |> arrange(desc(w.weights))
 print(weights_tab)
 write_csv(weights_tab, "output/synth_weights_haupt.csv")
 bal <- tabs$tab.pred |> as_tibble(rownames = "Praediktor")
-write_csv(bal, "output/synth_praediktorbalance_haupt.csv")
 
 # Praediktorbalance als LaTeX-Tabelle ausgeben.
 lab <- c(
@@ -83,9 +81,7 @@ print(
 )
 dev.off()
 
-# ---------------------------------------------------------------------------
 # B In-Space-Placebo
-# ---------------------------------------------------------------------------
 
 # Jeden Donor einmal als behandelte Einheit schaetzen.
 placebo_pfade <- map_dfr(id_donors, \(pid) {
@@ -124,9 +120,8 @@ print(
 )
 dev.off()
 
-# ---------------------------------------------------------------------------
-# C Leave-One-Out ueber alle Donoren mit positivem Gewicht (Abadie 2021)
-# ---------------------------------------------------------------------------
+
+# C Leave-One-Out über alle Donoren mit positivem Gewicht
 
 # Kennzahlen der Hauptspezifikation als Referenz berechnen.
 att_haupt       <- mean(pfade_haupt$gap[pfade_haupt$t >= CFG$t_treat])
@@ -145,7 +140,6 @@ loo_paths <- map_dfr(loo_laender, function(land) {
   if (is.null(res)) return(NULL)
   extract_paths(res) |> mutate(ausgeschlossen = land)
 })
-write_csv(loo_paths, "output/leave_one_out_pfade.csv")
 
 # ATT, Vorperioden-RMSPE und Abweichung von der Hauptspezifikation je Lauf berechnen.
 loo_summary <- loo_paths |>
@@ -185,9 +179,9 @@ print(
 )
 dev.off()
 
-# ---------------------------------------------------------------------------
-# D Rueckdatierung auf den Gesetzesbeschluss (Antizipation nach Schmitz 2017)
-# ---------------------------------------------------------------------------
+
+# D Rückdatierung auf den Gesetzesbeschluss
+
 
 # Fiktives Treatment auf 2014-Q3 legen und nur bis 2014-Q2 anpassen.
 T_ANTIZIP   <- 39L
@@ -200,7 +194,6 @@ LAGS_ANTIZIP <- lapply(c(8, 16, 24, 32), \(p) list(CFG$outcome, p, "mean"))
 res_antizip   <- run_scm(panel_scm, CFG$predictors, id_treated, id_donors,
                          special_predictors = LAGS_ANTIZIP, pre_t = pre_antizip)
 pfade_antizip <- extract_paths(res_antizip)
-write_csv(pfade_antizip, "output/synth_pfade_antizipation.csv")
 
 # Luecke im Fenster 2014-H2 und ab 2015 berechnen und speichern.
 kennz_antizip <- tibble(
@@ -212,19 +205,3 @@ kennz_antizip <- tibble(
   att_ab_2015     = mean(pfade_antizip$gap[pfade_antizip$t %in% 41:60]))
 print(kennz_antizip)
 write_csv(kennz_antizip, "output/antizipation_schmitz_kennzahlen.csv")
-
-# Luecke des rueckdatierten Laufs zeichnen.
-pdf("output/antizipation_schmitz_gap.pdf", width = 9, height = 5.5)
-print(
-  pfade_antizip |>
-    ggplot(aes(date, gap)) +
-    geom_line(linewidth = 0.9) +
-    geom_hline(yintercept = 0, linewidth = 0.3) +
-    geom_vline(xintercept = to_date(T_ANTIZIP), linetype = "dashed") +
-    geom_vline(xintercept = CFG$treat_date, linetype = "dotted") +
-    labs(title = "Antizipations-Check: Fit bis 2014-Q2, Gap danach",
-         subtitle = "gestrichelt 2014-Q3 (Gesetz beschlossen), gepunktet 2015-Q1 (Lohn greift)",
-         x = NULL, y = paste0("Differenz ", CFG$outcome)) +
-    theme_minimal(base_size = 11)
-)
-dev.off()

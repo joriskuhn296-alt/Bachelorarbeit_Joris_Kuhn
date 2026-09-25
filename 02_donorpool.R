@@ -66,7 +66,6 @@ tab_datenbasis <- datenbasis |>
             Schwaechster = sprintf("%s (%.0f%%)", A3_var, 100 * A3_cov),
             Korr_DEU = if_else(is.na(A4_corr), "-", sprintf("%.2f", A4_corr)))
 print(tab_datenbasis, n = Inf)
-write_csv(tab_datenbasis, "output/tab_datenbasis.csv")
 
 # Verletzte Kriterien melden.
 if (any(datenbasis$A1_fail))
@@ -136,20 +135,3 @@ id_donors  <- sort(setdiff(unique(panel_scm$unit_id), id_treated))
 saveRDS(list(cfg = CFG, thresh = THRESH, id_treated = id_treated,
              id_donors = id_donors, J = J, k = k, p_min = p_min),
         "data/processed/donorpool.rds")
-
-# Outcome-Verlaeufe Deutschlands und der Donoren zeichnen.
-pdf("output/abb_donorpool.pdf", width = 10, height = 6)
-print(
-  panel |>
-    ggplot(aes(date, .data[[CFG$outcome]], group = country)) +
-    geom_line(data = \(d) filter(d, country != CFG$treated),
-              aes(color = country), linewidth = 0.5, alpha = 0.8) +
-    geom_line(data = \(d) filter(d, country == CFG$treated),
-              color = "black", linewidth = 1.3) +
-    geom_vline(xintercept = CFG$treat_date, linetype = "dashed") +
-    labs(title = "Outcome-Verlaeufe (Quartale): Deutschland vs. Donorpool",
-         subtitle = "Deutschland schwarz; gestrichelt: 2015-Q1 | Outcome: emp_rate",
-         x = NULL, y = CFG$outcome) +
-    theme_minimal(base_size = 11)
-)
-dev.off()

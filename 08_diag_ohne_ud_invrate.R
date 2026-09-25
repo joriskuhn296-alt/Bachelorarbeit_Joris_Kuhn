@@ -15,19 +15,6 @@ id_donors  <- dp_obj$id_donors
 preds_red <- setdiff(CFG$predictors, c("ud", "inv_rate"))
 v_name    <- "R1 ohne UD & INV (J=7)"
 
-# Konvexe Huelle fuer den reduzierten Satz erneut pruefen und speichern.
-huelle_red <- panel_scm |> as_tibble() |> filter(t %in% CFG$pre_t) |>
-  group_by(country) |>
-  summarise(across(all_of(preds_red), \(x) mean(x, na.rm = TRUE)), .groups = "drop") |>
-  pivot_longer(-country, names_to = "variable", values_to = "m") |>
-  group_by(variable) |>
-  summarise(DEU = m[country == CFG$treated],
-            lo = min(m[country != CFG$treated]), hi = max(m[country != CFG$treated]),
-            .groups = "drop") |>
-  mutate(status = if_else(DEU >= lo & DEU <= hi, "ok", "AUSSERHALB"))
-print(huelle_red)
-write_csv(huelle_red, "output/diag_huelle_reduziert.csv")
-
 # Reduzierte Spezifikation schaetzen und Gewichte speichern.
 res <- run_scm(panel_scm, preds_red, id_treated, id_donors)
 pf  <- extract_paths(res) |> mutate(variante = v_name)
@@ -55,16 +42,3 @@ vergleich <- bind_rows(kennzahlen("V0 Haupt", pf_h, w_h, length(CFG$predictors))
                        kennzahlen(v_name, pf, w, length(preds_red)))
 print(vergleich)
 write_csv(vergleich, "output/diag_ohne_ud_invrate.csv")
-
-# Luecke der reduzierten Spezifikation zeichnen.
-pdf("output/diag_ohne_ud_invrate_plot.pdf", width = 9.5, height = 5.5)
-print(
-  pf |>
-    ggplot(aes(date, gap, color = variante)) + geom_line(linewidth = 0.8) +
-    geom_hline(yintercept = 0, linewidth = 0.3) +
-    geom_vline(xintercept = CFG$treat_date, linetype = "dotted") +
-    labs(title = "Diagnose: SCM ohne huellenverletzende Praediktoren (ud, inv_rate)",
-         subtitle = "Outcome: emp_rate | gepunktet: 2015-Q1 | kein Robustheitstest der Hauptspezifikation",
-         x = NULL, y = "Differenz emp_rate", color = NULL) +
-    theme_minimal(base_size = 11))
-dev.off()

@@ -192,12 +192,11 @@ panel_scm <- panel_long |>
   relocate(unit_id, country, t, date) |>
   as.data.frame()
 
-# Panel im Lang- und Breitformat speichern.
-saveRDS(panel_long, "data/processed/panel_long.rds")
+# Panel speichern
 saveRDS(panel_scm,  "data/processed/panel_scm.rds")
 write_csv(panel_scm, "data/processed/panel_scm.csv")
 
-# Quellenprotokoll mit Abdeckung je Variable schreiben.
+# Quellenprotokoll mit Abdeckung je Variable schreiben
 panel_long |>
   group_by(variable, src_file) |>
   summarise(n_laender = n_distinct(country),

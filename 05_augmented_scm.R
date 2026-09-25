@@ -1,16 +1,15 @@
-# Augmented SCM mit Ridge-Outcome-Modell nach Ben-Michael, Feller und Rothstein (2021).
 # Eingabe: panel_scm.rds sowie Pfade und Gewichte aus 04_estimation.R. Ausgabe: output.
 
 source("00_setup.R")
 library(tidyverse)
 library(augsynth)
 
-# Analysepanel laden und Treatmentindikator fuer Deutschland ab 2015-Q1 setzen.
+# Analysepanel laden und Treatmentindikator für Deutschland ab 2015-Q1 setzen.
 df <- readRDS("data/processed/panel_scm.rds") |>
   as_tibble() |>
   mutate(trt = as.integer(country == CFG$treated & t >= CFG$t_treat))
 
-# Ridge-ASCM mit datengesteuertem lambda schaetzen und zusammenfassen.
+# Ridge-ASCM mit datengesteuertem lambda schätzen und zusammenfassen.
 ascm <- augsynth(emp_rate ~ trt, unit = country, time = t, data = df,
                  progfunc = "Ridge", scm = TRUE)
 summ <- summary(ascm)
@@ -29,7 +28,7 @@ cat("Anzahl |w| > 0.05       :", sum(abs(w) > 0.05), "\n")
 cat("Negative Gewichte       :", sum(w < -1e-4), "\n")
 cat("Summe der Gewichte      :", round(sum(w), 3), "\n")
 
-# Luecken des klassischen Schaetzers und der ASCM auf gleicher Skala einlesen.
+# Lücken des klassischen Schaetzers und der ASCM auf gleicher Skala einlesen.
 pfade_klassisch <- read_csv("output/synth_pfade_haupt.csv", show_col_types = FALSE) |>
   mutate(t = as.integer(t))
 gap_ascm_alle <- summ$att |> as_tibble() |>
@@ -37,7 +36,7 @@ gap_ascm_alle <- summ$att |> as_tibble() |>
   filter(!is.na(t))
 w_klass <- read_csv("output/synth_weights_haupt.csv", show_col_types = FALSE)
 
-# ATT, Vorperioden-RMSPE und Gewichtsspanne beider Schaetzer vergleichen und speichern.
+# ATT, Vorperioden-RMSPE und Gewichtsspanne beider Schätzer vergleichen und speichern.
 vergleich <- tibble(
   Schaetzer   = c("Klassisch (Synth)", "Augmented SCM (Ridge)"),
   ATT_post    = c(mean(pfade_klassisch$gap[pfade_klassisch$t >= CFG$t_treat]),
@@ -50,7 +49,7 @@ vergleich <- tibble(
 print(vergleich)
 write_csv(vergleich, "output/ascm_vergleich.csv")
 
-# Luecken beider Schaetzer zeichnen.
+# Lücken beider Schätzer plotten.
 pdf("output/ascm_gap_vergleich.pdf", width = 9, height = 5.5)
 print(
   bind_rows(

@@ -12,10 +12,10 @@ dp_obj     <- readRDS("data/processed/donorpool.rds")
 id_treated <- dp_obj$id_treated
 id_donors  <- dp_obj$id_donors
 
-# Fiktive Treatmentzeitpunkte 2009-Q1 bis 2013-Q1 und kontaminierte Platzierungen festlegen.
+# Fiktive Treatmentzeitpunkte 2009-Q1 bis 2013-Q1 und kontaminierte Platzierung festhalten.
 T_PRE_END    <- CFG$t_treat - 1L
 FAKE_TREATS  <- c(17L, 21L, 25L, 29L, 33L)
-KONTAMINIERT <- c(17L, 21L, 25L)
+KONTAMINIERT <- 17L
 
 # Fuenf Outcome-Stuetzstellen gleichmaessig ueber das jeweilige Anpassungsfenster legen.
 make_lags <- function(t_fake, n_lags = 5L, outcome = CFG$outcome) {
@@ -55,16 +55,14 @@ for (tf in FAKE_TREATS) {
 tab <- bind_rows(kennzahlen) |> arrange(fake_treat)
 print(tab, n = Inf)
 write_csv(tab, "output/in_time_placebo_kennzahlen.csv")
-write_csv(bind_rows(pfade_all), "output/in_time_placebo_pfade.csv")
 
 # Donorgewichte je Platzierung speichern.
 gew <- bind_rows(gewichte_all) |>
   select(spez, fake_treat = date_fake, country = unit.names, gewicht = w.weights) |>
   arrange(fake_treat, desc(gewicht))
-write_csv(gew, "output/in_time_placebo_gewichte.csv")
 print(gew |> filter(gewicht > 0.001), n = Inf)
 
-# Luecken aller Platzierungen zeichnen.
+# Lücken aller Platzierungen plotten.
 pdf("output/in_time_placebo_plot.pdf", width = 9, height = 5.5)
 print(
   bind_rows(pfade_all) |>
