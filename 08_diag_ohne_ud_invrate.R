@@ -1,5 +1,5 @@
 # Diagnoselauf ohne die huellenverletzenden Praediktoren ud und inv_rate. Kein Robustheitstest.
-# Eingabe: panel_scm.rds, donorpool.rds sowie Pfade und Gewichte aus 04_estimation.R. Ausgabe: output.
+# Eingabe: panel_scm.rds, donorpool.rds sowie Pfade und Gewichte aus 03_estimation.R. Ausgabe: output.
 
 source("00_setup.R")
 library(tidyverse)

@@ -12,7 +12,6 @@ id_donors  <- dp_obj$id_donors
 
 # Hauptspezifikation und Variante ohne beide BIP-Größen festlegen.
 varianten <- list(
-  list(v = "V0 Haupt",    predictors = CFG$predictors),
   list(v = "V1 ohne BIP", predictors = setdiff(CFG$predictors, c("gdp_pc", "gdp_growth"))))
 
 # Beide Varianten schätzen und Gewichte, Pfade und Kennzahlen sammeln.

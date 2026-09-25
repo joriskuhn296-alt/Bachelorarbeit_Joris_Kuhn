@@ -11,6 +11,9 @@ scripts <- c(
   "08_diag_ohne_ud_invrate.R"
 )
 
+# Alte Ausgaben entfernen, damit output/ nur enthaelt, was dieser Lauf erzeugt.
+unlink(list.files("output", full.names = TRUE))
+
 # Jedes Skript in einer eigenen Umgebung ausführen.
 for (f in scripts) {
   message("\n=== ", f, " ===")
