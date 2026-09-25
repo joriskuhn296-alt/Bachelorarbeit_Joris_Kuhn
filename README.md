@@ -82,6 +82,7 @@ Die verwendeten Pakete und ihre Versionen sind in `renv.lock` festgehalten. Das 
 | `ascm_vergleich.csv` | 05 | Robustheitstabelle: ASCM |
 | `ascm_weights_ridge.csv` | 05 | Tabelle: ASCM-Gewichte |
 | `ascm_gap_vergleich.pdf` | 05 | Abbildung: Lücke SCM und ASCM |
+| `ascm_weights_basis.csv` | 05 | Tabelle: SCM-Basis der ASCM |
 | `zeitler_bound.csv` | 06 | Sensitivitätsschranke und ihre Komponenten |
 | `praediktorvariante_ohne_bip.csv` | 07 | Robustheitstabelle: Variante ohne BIP |
 | `weights_V1_ohne_BIP.csv` | 07 | Gewichte der Variante ohne BIP |
