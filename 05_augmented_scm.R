@@ -28,6 +28,8 @@ cat("Anzahl |w| > 0.05       :", sum(abs(w) > 0.05), "\n")
 cat("Negative Gewichte       :", sum(w < -1e-4), "\n")
 cat("Summe der Gewichte      :", round(sum(w), 3), "\n")
 
+
+
 # Lücken des klassischen Schaetzers und der ASCM auf gleicher Skala einlesen.
 pfade_klassisch <- read_csv("output/synth_pfade_haupt.csv", show_col_types = FALSE) |>
   mutate(t = as.integer(t))
@@ -38,13 +40,15 @@ w_klass <- read_csv("output/synth_weights_haupt.csv", show_col_types = FALSE)
 
 # ATT, Vorperioden-RMSPE und Gewichtsspanne beider Schätzer vergleichen und speichern.
 vergleich <- tibble(
-  Schaetzer   = c("Klassisch (Synth)", "Augmented SCM (Ridge)"),
+  Schaetzer   = c("Klassisch (Synth)", "SCM ohne Ergebnismodell (augsynth)", "Augmented SCM (Ridge)"),
   ATT_post    = c(mean(pfade_klassisch$gap[pfade_klassisch$t >= CFG$t_treat]),
+                  summ_basis$average_att$Estimate,
                   summ$average_att$Estimate),
   RMSPE_pre   = c(rmspe(pfade_klassisch$gap[pfade_klassisch$t < CFG$t_treat]),
+                  rmspe(gap_basis$gap[gap_basis$t < CFG$t_treat]),
                   rmspe(gap_ascm_alle$gap[gap_ascm_alle$t < CFG$t_treat])),
-  max_Gewicht = c(max(w_klass$w.weights), max(w)),
-  min_Gewicht = c(min(w_klass$w.weights), min(w))
+  max_Gewicht = c(max(w_klass$w.weights), max(w_basis), max(w)),
+  min_Gewicht = c(min(w_klass$w.weights), min(w_basis), min(w))
 )
 print(vergleich)
 write_csv(vergleich, "output/ascm_vergleich.csv")
