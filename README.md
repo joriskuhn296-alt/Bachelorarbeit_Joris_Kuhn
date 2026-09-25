@@ -1,8 +1,8 @@
 # Beschäftigungseffekt des gesetzlichen Mindestlohns 2015: Synthetic Control Method
 
-Analysecode und Rohdaten zur Bachelorarbeit von Joris Kuhn, TU Braunschweig, 2026.
+RCode und Rohdaten zur Bachelorarbeit von Joris Kuhn, TU Braunschweig, 2026.
 
-Titel der Arbeit: [Strukturelles kausales Modell zur Bewertung der Beschäftigungseffekte des Mindestlohns: Eine SCM-basierte Panelanalyse mit begrenzten Regionaldaten]
+Titel der Arbeit: Strukturelles kausales Modell zur Bewertung der Beschäftigungseffekte des Mindestlohns: Eine SCM-basierte Panelanalyse mit begrenzten Regionaldaten
 
 Die Arbeit schätzt mit der Synthetic Control Method (SCM) den aggregierten Effekt des 2015 eingeführten gesetzlichen Mindestlohns auf die Erwerbstätigenquote der 15- bis 64-Jährigen in Deutschland. Die synthetische Kontrolle wird aus sieben OECD-Staaten ohne gesetzlichen Mindestlohn gebildet (Österreich, Dänemark, Finnland, Island, Italien, Norwegen, Schweden). Die Analyse nutzt Quartalsdaten von 2005-Q1 bis 2019-Q4, das Treatment liegt in 2015-Q1. Ergänzt wird sie um Placebo-Tests, Leave-One-Out, eine Augmented SCM, eine Rückdatierung des Treatments und eine Sensitivitätsschranke nach Zeitler et al. (2023).
 
