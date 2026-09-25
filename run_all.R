@@ -2,17 +2,16 @@
 
 scripts <- c(
   "01_build_panel.R",
-  "02_diagnostics.R",
-  "03_donorpool.R",
-  "04_estimation.R",
-  "05_in_time_placebo.R",
-  "06_augmented_scm.R",
-  "07_sensitivity_zeitler.R",
-  "08_variante_ohne_bip.R",
-  "09_diag_ohne_ud_invrate.R"
+  "02_donorpool.R",
+  "03_estimation.R",
+  "04_in_time_placebo.R",
+  "05_augmented_scm.R",
+  "06_sensitivity_zeitler.R",
+  "07_variante_ohne_bip.R",
+  "08_diag_ohne_ud_invrate.R"
 )
 
-# Jedes Skript in einer eigenen Umgebung ausfuehren, damit keines von Objekten eines anderen abhaengt.
+# Jedes Skript in einer eigenen Umgebung ausführen.
 for (f in scripts) {
   message("\n=== ", f, " ===")
   source(f, local = new.env(), encoding = "UTF-8")

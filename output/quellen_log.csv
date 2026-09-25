@@ -1,0 +1,8 @@
+variable,src_file,n_laender,von,bis,n_obs
+emp_rate,EmploymentRateQuarterly.csv,8,2005,2019.75,480
+gdp_growth,QNA_T0102.csv,8,2005,2019.75,480
+gdp_pc,annual_repliziert,8,2005,2019.75,480
+inflation,CPIQuarterly.csv,8,2005,2019.75,480
+inv_rate,QNA_T0102.csv,8,2005,2019.75,480
+lfpr,LabourForceParticipationQuarterly.csv,8,2005,2019.75,480
+ud,annual_repliziert,8,2005,2019.75,480
