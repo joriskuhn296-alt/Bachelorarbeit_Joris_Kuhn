@@ -1,5 +1,3 @@
-# Beschäftigungseffekt des gesetzlichen Mindestlohns 2015: Synthetic Control Method
-
 RCode und Rohdaten zur Bachelorarbeit von Joris Kuhn, TU Braunschweig, 2026.
 
 Titel der Arbeit: Strukturelles kausales Modell zur Bewertung der Beschäftigungseffekte des Mindestlohns: Eine SCM-basierte Panelanalyse mit begrenzten Regionaldaten
